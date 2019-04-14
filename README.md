@@ -7,8 +7,9 @@ git clone https://github.com/johnsblevins/ServiceMapper.git
 cd ServiceMapper
 ```
 ## Get Connection Info
-Get-ConnectionInfo can be run on a server.  It takes the following parameters:
+Get-ConnectionInfo.ps should be run on each server for which you would like to collect data.  
 ```
+
 ```
 
 ## Collect Connection Info Remotely
