@@ -1,31 +1,31 @@
-﻿<#
-    .DESCRIPTION
-    
-    $connDir # Directory to store output CSV file without trailing /
-    $loopCount = 20 # Number of Times to Loop
-    $loopFreqSecs = 10 # Number of Seconds to wait between loops
-
-    .NOTES
-        AUTHOR: 
-        LASTEDIT: 
+﻿<#  
+.SYNOPSIS  
+    Gather Network Connection Info (Source IP, Destination IP and Port Number) over Specified Collection Interval  
+.DESCRIPTION  
+    This script looks at connections made to/from the system and aggregates the Source IP, Destination IP and Port information for all established IP4 connections.  The collected data is exported to a CSV file. 
+.NOTES  
+    File Name  : Get-ConnectionInfo.ps1  
+    Author     : John Blevins
+    Requires   : PowerShell V2 CTP3  
+.LINK  
 #>
 
 param (
     [Parameter(Mandatory=$false)]
     [string] 
-    $connDir = "\\localhost\c$\temp\conns",
+    $connDir = "connections", # Default to "connections" folder under local directory if not specified
 
     [Parameter(Mandatory=$false)]
     [switch] 
-    $enableLoop = $false,
+    $enableLoop, 
 
     [Parameter(Mandatory=$false)]
     [int] 
-    $loopCount = 288,
+    $loopCount = 12, # 12 Loops by default
 
     [Parameter(Mandatory=$false)]
     [int] 
-    $loopFreqSecs = 300
+    $loopFreqSecs = 300 # 5 Minute Interval by default
 )
 
 $loopIndex = 1 # Initialize Loop Index
