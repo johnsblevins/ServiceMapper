@@ -48,7 +48,7 @@ do
 
     # Get Local Connections in "Established" State excluding IPV6 and Loopback Entries
     $activeConns = @(Get-NetTCPConnection -State Established | Where-Object { $_.LocalAddress -notlike "*:*" -and $_.LocalAddress -notlike "127.*" }  | Select-Object LocalAddress,LocalPort,RemoteAddress,RemotePort)
-    $listeningPorts = @(Get-NetTCPConnection -State Listen | Where-Object { $_.LocalAddress -notlike "*:*" -and $_.LocalAddress -notlike "127.*" }  | Select-Object LocalPort)
+    $listeningPorts = @(Get-NetTCPConnection -State Listen | Select-Object  -ExpandProperty LocalPort)
 
     # Process Active Connections
     foreach($activeConn in $activeConns)

@@ -1,15 +1,32 @@
-﻿$connectionDirectory = "C:\temp\conncollection"
+﻿<#  
+.SYNOPSIS  
+    Gather Network Connection Info (Source IP, Destination IP and Port Number) over Specified Collection Interval  
+.DESCRIPTION  
+    This script looks at connections made to/from the system and aggregates the Source IP, Destination IP and Port information for all established IP4 connections.  The collected data is exported to a CSV file. 
+.NOTES  
+    File Name  : Create-VisioDiagram.ps1  
+    Author     : John Blevins
+    Requires   : PowerShell V2 CTP3  
+.LINK  
+#>
+
+param (
+    [Parameter(Mandatory=$false)]
+    [string] 
+    $connDir = ""
+)
+
 $shapes = @{}
 $existingConnections = @()
 
-if (Test-Path $connectionDirectory )
+if (Test-Path $connDir )
 {   
     # Create New Visio App and Document 
     $app=New-VisioApplication
     $doc=New-VisioDocument
 
     # Get All Connection Files (CSVs) and Aggregate Unique entries
-    $connectionFiles = Get-ChildItem $connectionDirectory -Filter "*.csv"
+    $connectionFiles = Get-ChildItem $connDir -Filter "*.csv"
     foreach($connectionFile in $connectionFiles)
     {
             $existingConnections += @(Import-Csv -Path $connectionFile.pspath)     
