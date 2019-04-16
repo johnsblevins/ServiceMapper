@@ -1,4 +1,4 @@
-﻿$connectionDirectory = "C:\git\ServiceMapper\conns"
+﻿$connectionDirectory = "C:\temp\conncollection"
 $shapes = @{}
 $existingConnections = @()
 

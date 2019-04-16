@@ -48,6 +48,7 @@ do
 
     # Get Local Connections in "Established" State excluding IPV6 and Loopback Entries
     $activeConns = @(Get-NetTCPConnection -State Established | Where-Object { $_.LocalAddress -notlike "*:*" -and $_.LocalAddress -notlike "127.*" }  | Select-Object LocalAddress,LocalPort,RemoteAddress,RemotePort)
+    $listeningPorts = @(Get-NetTCPConnection -State Listen | Where-Object { $_.LocalAddress -notlike "*:*" -and $_.LocalAddress -notlike "127.*" }  | Select-Object LocalPort)
 
     # Process Active Connections
     foreach($activeConn in $activeConns)
@@ -55,19 +56,20 @@ do
         $processedConn = new-object System.Object
 
         # Determine Source IP, Destination IP and Port Number
-        if ($activeConn.LocalPort -in 49152..65535 -and $activeConn.RemotePort -notin 49152..65535) # Includes case where local system initiates connection.  This is where the local port is in the dynamice range (49152-65535) but the remote port isn't.
-        {
+        if ( $activeConn.LocalPort -in $listeningPorts ) # Includes case where local system initiates connection.  This is where the local port is in the dynamice range (49152-65535) but the remote port isn't.
+        {            
+            $SourceIP = $activeConn.RemoteAddress
+            $DestinationIP = $activeConn.LocalAddress
+            $Port = $activeConn.LocalPort
+            
+        }
+        else # Includes cases where remote system initiates connection and where it is unknown which side initiates communication.  This is where both the local port and remote port are in the dynamic range 49152-65535.
+        {            
             $SourceIP = $activeConn.LocalAddress
             $DestinationIP = $activeConn.RemoteAddress
             $Port = $activeConn.RemotePort
         }
-        else # Includes cases where remote system initiates connection and where it is unknown which side initiates communication.  This is where both the local port and remote port are in the dynamic range 49152-65535.
-        {
-            $SourceIP = $activeConn.RemoteAddress
-            $DestinationIP = $activeConn.LocalAddress
-            $Port = $activeConn.LocalPort
-        }
-        
+
         # Populate Processed Connection object with Source IP, Destination IP and Port Number and add to Processed Connection Collection
         $processedConn | add-member -type NoteProperty -name SourceIP -value $SourceIP
         $processedConn | add-member -type NoteProperty -name DestinationIP -value $DestinationIP
